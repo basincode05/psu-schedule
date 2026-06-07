@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ตารางเรียน — มหาวิทยาลัยสงขลานครินทร์</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --psu-navy: #002B5C;
+    --psu-blue: #00438A;
+    --psu-gold: #C9A84C;
+    --psu-gold-light: #E8C96A;
+    --psu-light: #F4F7FC;
+    --psu-white: #FFFFFF;
+    --psu-gray: #8A9BBE;
+    --psu-border: #D6E0F0;
+    --psu-text: #1A2E4A;
+    --psu-text-soft: #5A6E8A;
+
+    --color-1: #3B82F6;
+    --color-2: #10B981;
+    --color-3: #F59E0B;
+    --color-4: #EF4444;
+    --color-5: #8B5CF6;
+    --color-6: #EC4899;
+    --color-7: #06B6D4;
+    --color-8: #84CC16;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sarabun', sans-serif;
+    background: var(--psu-light);
+    color: var(--psu-text);
+    min-height: 100vh;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    background: linear-gradient(135deg, var(--psu-navy) 0%, var(--psu-blue) 100%);
+    padding: 0;
+    box-shadow: 0 4px 20px rgba(0,43,92,0.3);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 28px;
+    border-bottom: 2px solid rgba(201,168,76,0.4);
+  }
+
+  .psu-logo {
+    width: 52px;
+    height: 52px;
+    background: var(--psu-gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--psu-navy);
+    letter-spacing: -1px;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.3);
+  }
+
+  .header-text h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--psu-white);
+    letter-spacing: 0.3px;
+  }
+
+  .header-text p {
+    font-size: 12px;
+    color: var(--psu-gold-light);
+    font-weight: 400;
+    margin-top: 1px;
+  }
+
+  .header-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 10px;
+  }
+
+  .btn {
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: none;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-gold {
+    background: var(--psu-gold);
+    color: var(--psu-navy);
+  }
+  .btn-gold:hover { background: var(--psu-gold-light); transform: translateY(-1px); }
+
+  .btn-outline {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.25);
+  }
+  .btn-outline:hover { background: rgba(255,255,255,0.2); }
+
+  .btn-danger {
+    background: #EF4444;
+    color: white;
+  }
+  .btn-danger:hover { background: #DC2626; }
+
+  .btn-primary {
+    background: var(--psu-blue);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .btn-primary:hover { background: #0055AA; }
+
+  /* term info bar */
+  .header-bar {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 8px 28px;
+    background: rgba(0,0,0,0.15);
+  }
+
+  .term-badge {
+    font-size: 12px;
+    color: var(--psu-gold-light);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .course-count {
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+  }
+
+  /* ===== MAIN LAYOUT ===== */
+  .main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 20px;
+  }
+
+  /* ===== TIMETABLE ===== */
+  .timetable-wrap {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 20px rgba(0,43,92,0.08);
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+
+  .timetable-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--psu-border);
+  }
+
+  .timetable-header h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--psu-navy);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .timetable-scroll {
+    overflow-x: auto;
+  }
+
+  table.schedule {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+  }
+
+  table.schedule thead th {
+    padding: 12px 8px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+    position: sticky;
+    top: 0;
+  }
+
+  table.schedule thead th:first-child {
+    background: var(--psu-navy);
+    width: 70px;
+    font-size: 11px;
+  }
+
+  .day-header {
+    background: var(--psu-blue) !important;
+  }
+
+  .day-header span {
+    display: block;
+    font-size: 11px;
+    font-weight: 400;
+    opacity: 0.75;
+    margin-top: 2px;
+  }
+
+  table.schedule tbody td {
+    border: 1px solid #EEF2F8;
+    padding: 0;
+    height: 64px;
+    width: 64px;
+    vertical-align: top;
+    position: relative;
+  }
+
+  table.schedule tbody td:first-child {
+    background: #F8FAFF;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--psu-gray);
+    font-family: 'IBM Plex Mono', monospace;
+    border-right: 2px solid var(--psu-border);
+    padding: 4px;
+    vertical-align: middle;
+  }
+
+  .slot-empty {
+    width: 100%;
+    height: 100%;
+    transition: background 0.15s;
+  }
+  .slot-empty:hover { background: rgba(0,67,138,0.04); }
+
+  .course-block {
+    position: absolute;
+    inset: 2px;
+    border-radius: 8px;
+    padding: 6px 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .course-block:hover {
+    filter: brightness(1.08);
+    transform: scale(1.02);
+    z-index: 5;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  .course-block .cb-code {
+    font-size: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+    opacity: 0.85;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .course-block .cb-name {
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+  }
+
+  .course-block .cb-teacher {
+    font-size: 10px;
+    opacity: 0.75;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 1px;
+  }
+
+  /* ===== COURSE LIST ===== */
+  .section-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--psu-navy);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .course-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .course-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 10px rgba(0,43,92,0.06);
+    border-left: 4px solid;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: box-shadow 0.2s, transform 0.2s;
+    animation: slideIn 0.3s ease;
+  }
+
+  .course-card:hover {
+    box-shadow: 0 6px 20px rgba(0,43,92,0.12);
+    transform: translateY(-2px);
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .card-code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--psu-gray);
+    background: var(--psu-light);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .card-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--psu-text);
+    line-height: 1.3;
+  }
+
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .meta-pill {
+    font-size: 12px;
+    color: var(--psu-text-soft);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--psu-light);
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .btn-sm {
+    padding: 5px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-family: 'Sarabun', sans-serif;
+    transition: all 0.15s;
+  }
+
+  .btn-edit {
+    background: var(--psu-light);
+    color: var(--psu-blue);
+    border: 1px solid var(--psu-border);
+  }
+  .btn-edit:hover { background: var(--psu-border); }
+
+  .btn-del {
+    background: #FEF2F2;
+    color: #EF4444;
+    border: 1px solid #FECACA;
+  }
+  .btn-del:hover { background: #FEE2E2; }
+
+  /* ===== MODAL ===== */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,20,50,0.55);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .modal {
+    background: white;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 500px;
+    margin: 16px;
+    box-shadow: 0 20px 60px rgba(0,43,92,0.25);
+    animation: slideUp 0.25s ease;
+    overflow: hidden;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .modal-header {
+    background: linear-gradient(135deg, var(--psu-navy), var(--psu-blue));
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-header h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: white;
+  }
+
+  .modal-close {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.25); }
+
+  .modal-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--psu-text);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .required { color: #EF4444; }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 10px 14px;
+    border: 1.5px solid var(--psu-border);
+    border-radius: 10px;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 14px;
+    color: var(--psu-text);
+    transition: border 0.15s, box-shadow 0.15s;
+    outline: none;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--psu-blue);
+    box-shadow: 0 0 0 3px rgba(0,67,138,0.12);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .color-picker-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .color-opt {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: all 0.15s;
+  }
+
+  .color-opt.selected, .color-opt:hover {
+    border-color: var(--psu-navy);
+    transform: scale(1.15);
+  }
+
+  .modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--psu-border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  /* ===== CONFLICT TOAST ===== */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #FEF2F2;
+    border: 1.5px solid #FECACA;
+    color: #991B1B;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    z-index: 300;
+    display: none;
+    animation: toastIn 0.3s ease;
+    max-width: 360px;
+  }
+
+  .toast.success {
+    background: #F0FDF4;
+    border-color: #86EFAC;
+    color: #166534;
+  }
+
+  .toast.show { display: flex; align-items: center; gap: 10px; }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== EMPTY STATE ===== */
+  .empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--psu-gray);
+  }
+
+  .empty-state .es-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .empty-state p {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ===== PRINT ===== */
+  @media print {
+    header, .course-list, .section-title, .timetable-header .btn { display: none !important; }
+    .timetable-wrap { box-shadow: none; }
+    body { background: white; }
+  }
+
+  @media (max-width: 640px) {
+    .header-top { padding: 12px 16px; }
+    .header-actions .btn span { display: none; }
+    .main { padding: 16px 12px; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-top">
+    <div class="psu-logo">PSU</div>
+    <div class="header-text">
+      <h1>มหาวิทยาลัยสงขลานครินทร์</h1>
+      <p>Prince of Songkla University — ระบบจัดตารางเรียน</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-outline" onclick="printSchedule()">🖨️ <span>พิมพ์</span></button>
+      <button class="btn btn-gold" onclick="openModal()">+ <span>เพิ่มวิชา</span></button>
+    </div>
+  </div>
+  <div class="header-bar">
+    <div class="term-badge">📅 ภาคเรียนที่ <strong id="term-label">1/2568</strong></div>
+    <div class="course-count" id="course-count">0 รายวิชา</div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TIMETABLE -->
+  <div class="timetable-wrap">
+    <div class="timetable-header">
+      <h2>📊 ตารางเรียนรายสัปดาห์</h2>
+    </div>
+    <div class="timetable-scroll">
+      <table class="schedule" id="schedule-table">
+        <thead id="schedule-head"></thead>
+        <tbody id="schedule-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- COURSE CARDS -->
+  <div class="section-title">📚 รายวิชาทั้งหมด</div>
+  <div class="course-list" id="course-list">
+    <div class="empty-state" id="empty-state">
+      <span class="es-icon">📋</span>
+      <p>ยังไม่มีรายวิชา<br>กดปุ่ม <strong>+ เพิ่มวิชา</strong> เพื่อเริ่มต้น</p>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-title">➕ เพิ่มรายวิชา</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-id">
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>รหัสวิชา <span class="required">*</span></label>
+          <input type="text" id="f-code" placeholder="เช่น 241-101">
+        </div>
+        <div class="form-group">
+          <label>วัน <span class="required">*</span></label>
+          <select id="f-day">
+            <option value="">-- เลือกวัน --</option>
+            <option value="0">จันทร์</option>
+            <option value="1">อังคาร</option>
+            <option value="2">พุธ</option>
+            <option value="3">พฤหัสบดี</option>
+            <option value="4">ศุกร์</option>
+            <option value="5">เสาร์</option>
+            <option value="6">อาทิตย์</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>ชื่อวิชา <span class="required">*</span></label>
+        <input type="text" id="f-name" placeholder="เช่น แคลคูลัส 1">
+      </div>
+
+      <div class="form-group">
+        <label>ชื่ออาจารย์</label>
+        <input type="text" id="f-teacher" placeholder="เช่น ผศ.ดร.สมชาย ใจดี">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>เวลาเริ่ม <span class="required">*</span></label>
+          <input type="time" id="f-start" value="08:00">
+        </div>
+        <div class="form-group">
+          <label>เวลาสิ้นสุด <span class="required">*</span></label>
+          <input type="time" id="f-end" value="09:00">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>หมายเหตุ</label>
+        <input type="text" id="f-note" placeholder="หมายเหตุ (ถ้ามี)">
+      </div>
+
+      <div class="form-group">
+        <label>สีประจำวิชา</label>
+        <div class="color-picker-row" id="color-picker"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" style="color:#333;border-color:#ddd;" onclick="closeModal()">ยกเลิก</button>
+      <button class="btn btn-gold" onclick="saveCourse()">💾 บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span id="toast-icon">⚠️</span>
+  <span id="toast-msg"></span>
+</div>
+
+<script>
+const COLORS = [
+  { hex: '#3B82F6', text: '#fff' },
+  { hex: '#10B981', text: '#fff' },
+  { hex: '#F59E0B', text: '#fff' },
+  { hex: '#EF4444', text: '#fff' },
+  { hex: '#8B5CF6', text: '#fff' },
+  { hex: '#EC4899', text: '#fff' },
+  { hex: '#06B6D4', text: '#fff' },
+  { hex: '#84CC16', text: '#fff' },
+  { hex: '#F97316', text: '#fff' },
+  { hex: '#6366F1', text: '#fff' },
+];
+
+const DAYS = ['จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์','อาทิตย์'];
+
+// Hours: 08:00–19:00 รายชั่วโมง
+const HOURS = [];
+const HOUR_LABELS = [];
+for (let h = 8; h <= 19; h++) {
+  const label = (h < 10 ? '0' : '') + h + ':00';
+  HOURS.push(label);
+  HOUR_LABELS.push(label);
+}
+
+let courses = JSON.parse(localStorage.getItem('psu-courses') || '[]');
+let selectedColor = COLORS[0].hex;
+let editingId = null;
+
+function save() {
+  localStorage.setItem('psu-courses', JSON.stringify(courses));
+}
+
+function timeToMins(t) {
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+}
+
+function minsToTime(m) {
+  const h = Math.floor(m / 60);
+  const mm = m % 60;
+  return String(h).padStart(2,'0') + ':' + String(mm).padStart(2,'0');
+}
+
+// ===== RENDER TIMETABLE =====
+function renderTable() {
+  const thead = document.getElementById('schedule-head');
+  const tbody = document.getElementById('schedule-body');
+  thead.innerHTML = '';
+  tbody.innerHTML = '';
+
+  // Header row: ว/ด + each hour slot
+  const headRow = document.createElement('tr');
+  const cornerTh = document.createElement('th');
+  cornerTh.textContent = 'วัน \\ เวลา';
+  cornerTh.style.background = 'var(--psu-navy)';
+  cornerTh.style.minWidth = '90px';
+  headRow.appendChild(cornerTh);
+
+  HOURS.forEach((hour, i) => {
+    const th = document.createElement('th');
+    th.className = 'day-header';
+    th.textContent = HOUR_LABELS[i];
+    th.style.minWidth = '90px';
+    th.style.fontSize = '11px';
+    th.style.padding = '10px 4px';
+    headRow.appendChild(th);
+  });
+  thead.appendChild(headRow);
+
+  // One row per day
+  const DAY_LABELS = [
+    ['จันทร์','Mon'], ['อังคาร','Tue'], ['พุธ','Wed'],
+    ['พฤหัสบดี','Thu'], ['ศุกร์','Fri'], ['เสาร์','Sat'], ['อาทิตย์','Sun']
+  ];
+
+  // Track which (day, slotIndex) cells are already spanned
+  const spanned = {}; // key: `${d}-${si}`
+
+  DAY_LABELS.forEach(([th_label, th_en], d) => {
+    const tr = document.createElement('tr');
+
+    // Day label cell
+    const dayTd = document.createElement('td');
+    dayTd.style.background = 'var(--psu-blue)';
+    dayTd.style.color = 'white';
+    dayTd.style.fontWeight = '700';
+    dayTd.style.textAlign = 'center';
+    dayTd.style.padding = '6px 8px';
+    dayTd.style.borderRight = '2px solid var(--psu-border)';
+    dayTd.style.fontSize = '13px';
+    dayTd.innerHTML = `${th_label}<br><span style="font-size:10px;opacity:0.7;font-weight:400">${th_en}</span>`;
+    tr.appendChild(dayTd);
+
+    HOURS.forEach((hour, si) => {
+      if (spanned[`${d}-${si}`]) return; // skip, covered by colspan
+
+      const td = document.createElement('td');
+      const slotStart = timeToMins(hour);
+      const slotEnd = slotStart + 60;
+
+      const course = courses.find(c => {
+        if (parseInt(c.day) !== d) return false;
+        const cs = timeToMins(c.start);
+        const ce = timeToMins(c.end);
+        return cs < slotEnd && ce > slotStart;
+      });
+
+      if (course) {
+        const cs = timeToMins(course.start);
+        const ce = timeToMins(course.end);
+        const isFirst = cs >= slotStart && cs < slotEnd;
+
+        if (isFirst) {
+          const span = Math.ceil((ce - cs) / 60);
+          td.colSpan = span;
+          // mark spanned cells
+          for (let k = 1; k < span; k++) spanned[`${d}-${si + k}`] = true;
+
+          const block = document.createElement('div');
+          block.className = 'course-block';
+          block.style.background = course.color;
+          const ctext = COLORS.find(c => c.hex === course.color)?.text || '#fff';
+          block.innerHTML = `
+            <div class="cb-code" style="color:${ctext}">${course.code}</div>
+            <div class="cb-name" style="color:${ctext}">${course.name}</div>
+            ${course.teacher ? `<div class="cb-teacher" style="color:${ctext}">${course.teacher}</div>` : ''}
+          `;
+          block.title = `${course.code} ${course.name}\n${course.start}–${course.end}${course.teacher ? '\n' + course.teacher : ''}${course.note ? '\n' + course.note : ''}`;
+          block.onclick = () => openModal(course.id);
+          td.appendChild(block);
+        } else {
+          // part of a course block already handled — skip
+          return;
+        }
+      } else {
+        const empty = document.createElement('div');
+        empty.className = 'slot-empty';
+        td.appendChild(empty);
+      }
+
+      tr.appendChild(td);
+    });
+
+    tbody.appendChild(tr);
+  });
+}
+
+// ===== RENDER CARDS =====
+function renderCards() {
+  const list = document.getElementById('course-list');
+  const empty = document.getElementById('empty-state');
+  document.getElementById('course-count').textContent = courses.length + ' รายวิชา';
+
+  // remove old cards
+  list.querySelectorAll('.course-card').forEach(el => el.remove());
+
+  if (courses.length === 0) {
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  courses.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'course-card';
+    card.style.borderLeftColor = c.color;
+
+    card.innerHTML = `
+      <div class="card-top">
+        <span class="card-code">${c.code || '—'}</span>
+      </div>
+      <div class="card-name">${c.name}</div>
+      <div class="card-meta">
+        <span class="meta-pill">📅 ${DAYS[c.day]} ${c.start}–${c.end}</span>
+        ${c.teacher ? `<span class="meta-pill">👨‍🏫 ${c.teacher}</span>` : ''}
+        ${c.note ? `<span class="meta-pill">📝 ${c.note}</span>` : ''}
+      </div>
+      <div class="card-actions">
+        <button class="btn-sm btn-edit" onclick="openModal('${c.id}')">✏️ แก้ไข</button>
+        <button class="btn-sm btn-del" onclick="deleteCourse('${c.id}')">🗑️ ลบ</button>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function renderAll() {
+  renderTable();
+  renderCards();
+}
+
+// ===== COLOR PICKER =====
+function buildColorPicker() {
+  const wrap = document.getElementById('color-picker');
+  wrap.innerHTML = '';
+  COLORS.forEach(c => {
+    const dot = document.createElement('div');
+    dot.className = 'color-opt' + (c.hex === selectedColor ? ' selected' : '');
+    dot.style.background = c.hex;
+    dot.onclick = () => {
+      selectedColor = c.hex;
+      wrap.querySelectorAll('.color-opt').forEach(d => d.classList.remove('selected'));
+      dot.classList.add('selected');
+    };
+    wrap.appendChild(dot);
+  });
+}
+
+// ===== MODAL =====
+function openModal(id = null) {
+  editingId = id;
+  const modal = document.getElementById('modal');
+  modal.classList.add('open');
+
+  if (id) {
+    const c = courses.find(x => x.id === id);
+    document.getElementById('modal-title').textContent = '✏️ แก้ไขรายวิชา';
+    document.getElementById('f-code').value = c.code;
+    document.getElementById('f-name').value = c.name;
+    document.getElementById('f-teacher').value = c.teacher || '';
+    document.getElementById('f-day').value = c.day;
+    document.getElementById('f-start').value = c.start;
+    document.getElementById('f-end').value = c.end;
+    document.getElementById('f-note').value = c.note || '';
+    selectedColor = c.color;
+  } else {
+    document.getElementById('modal-title').textContent = '➕ เพิ่มรายวิชา';
+    document.getElementById('f-code').value = '';
+    document.getElementById('f-name').value = '';
+    document.getElementById('f-teacher').value = '';
+    document.getElementById('f-day').value = '';
+    document.getElementById('f-start').value = '08:00';
+    document.getElementById('f-end').value = '10:00';
+    document.getElementById('f-note').value = '';
+    selectedColor = COLORS[courses.length % COLORS.length].hex;
+  }
+  buildColorPicker();
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  editingId = null;
+}
+
+// ===== SAVE =====
+function saveCourse() {
+  const code = document.getElementById('f-code').value.trim();
+  const name = document.getElementById('f-name').value.trim();
+  const day = document.getElementById('f-day').value;
+  const start = document.getElementById('f-start').value;
+  const end = document.getElementById('f-end').value;
+  const teacher = document.getElementById('f-teacher').value.trim();
+  const note = document.getElementById('f-note').value.trim();
+
+  if (!code || !name || day === '' || !start || !end) {
+    showToast('กรุณากรอกข้อมูลให้ครบ (รหัสวิชา ชื่อวิชา วัน เวลา)', false);
+    return;
+  }
+
+  if (timeToMins(start) >= timeToMins(end)) {
+    showToast('เวลาสิ้นสุดต้องมากกว่าเวลาเริ่ม', false);
+    return;
+  }
+
+  // conflict check
+  const conflict = courses.find(c => {
+    if (editingId && c.id === editingId) return false;
+    if (parseInt(c.day) !== parseInt(day)) return false;
+    const cs = timeToMins(c.start), ce = timeToMins(c.end);
+    const ns = timeToMins(start), ne = timeToMins(end);
+    return cs < ne && ce > ns;
+  });
+
+  if (conflict) {
+    showToast(`⚠️ เวลาชนกับวิชา "${conflict.name}" (${conflict.start}–${conflict.end})`, false);
+    return;
+  }
+
+  if (editingId) {
+    const idx = courses.findIndex(c => c.id === editingId);
+    courses[idx] = { ...courses[idx], code, name, day: parseInt(day), start, end, teacher, note, color: selectedColor };
+  } else {
+    courses.push({
+      id: Date.now().toString(),
+      code, name, day: parseInt(day), start, end, teacher, note, color: selectedColor
+    });
+  }
+
+  save();
+  renderAll();
+  closeModal();
+  showToast('บันทึกรายวิชาเรียบร้อย ✓', true);
+}
+
+// ===== DELETE =====
+function deleteCourse(id) {
+  if (!confirm('ลบวิชานี้ออกจากตารางเรียน?')) return;
+  courses = courses.filter(c => c.id !== id);
+  save();
+  renderAll();
+  showToast('ลบรายวิชาแล้ว', true);
+}
+
+// ===== TOAST =====
+function showToast(msg, success = false) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  document.getElementById('toast-icon').textContent = success ? '✅' : '⚠️';
+  t.className = 'toast show' + (success ? ' success' : '');
+  setTimeout(() => t.className = 'toast', 3500);
+}
+
+// ===== PRINT =====
+function printSchedule() { window.print(); }
+
+// ===== CLOSE ON OVERLAY =====
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ===== INIT =====
+renderAll();
+</script>
+</body>
+</html>
